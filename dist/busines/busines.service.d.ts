@@ -1,3 +1,4 @@
+import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateBusineDto } from './dto/create-busine.dto';
 import { UpdateBusineDto } from './dto/update-busine.dto';
@@ -8,6 +9,6 @@ export declare class BusinesService {
     create(createBusineDto: CreateBusineDto): Promise<Busine>;
     findAll(): string;
     findOne(id: number): Promise<Busine>;
-    update(id: number, updateBusineDto: UpdateBusineDto): string;
+    update(id: number, updateBusineDto: UpdateBusineDto, User: User): Promise<Busine>;
     remove(id: number): string;
 }

@@ -53,7 +53,7 @@ let UsersService = class UsersService {
             where: { id },
         });
         if (!user) {
-            throw new common_1.NotFoundException('user not found5');
+            throw new common_1.NotFoundException('user not found');
         }
         return user;
     }

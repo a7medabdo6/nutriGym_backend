@@ -1,12 +1,16 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateBusineDto {
-    @IsString()
-    name:string
+  @IsString()
+  name: string;
 
-    @IsString()
-    logo:string
+  @IsString()
+  logo: string;
 
-    @IsString()
-    type:string
+  @IsString()
+  type: string;
+
+  @IsNumber()
+  @IsOptional()
+  userId: number;
 }

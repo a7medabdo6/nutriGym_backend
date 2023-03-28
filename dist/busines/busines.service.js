@@ -31,8 +31,14 @@ let BusinesService = class BusinesService {
     findOne(id) {
         return this.repo.findOne({ where: { id } });
     }
-    update(id, updateBusineDto) {
-        return `This action updates a #${id} busine`;
+    async update(id, updateBusineDto, User) {
+        const busines = await this.repo.findOne({ where: { id } });
+        if (!busines) {
+            throw new common_1.NotFoundException('busines not found');
+        }
+        Object.assign(busines, updateBusineDto);
+        busines.user = [User];
+        return this.repo.save(busines);
     }
     remove(id) {
         return `This action removes a #${id} busine`;
