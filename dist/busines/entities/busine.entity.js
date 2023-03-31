@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Busine = void 0;
 const openapi = require("@nestjs/swagger");
+const busines_type_entity_1 = require("../../busines-type/entities/busines-type.entity");
+const business_offer_entity_1 = require("../../business_offers/entities/business_offer.entity");
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
 let Busine = class Busine {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, logo: { required: true, type: () => String }, name: { required: true, type: () => String }, type: { required: true, type: () => String }, user: { required: false, type: () => [require("../../users/entities/user.entity").User] } };
+        return { id: { required: true, type: () => Number }, logo: { required: true, type: () => String }, name: { required: true, type: () => String }, type: { required: true, type: () => String }, user: { required: false, type: () => [require("../../users/entities/user.entity").User] }, busines_type: { required: true, type: () => require("../../busines-type/entities/busines-type.entity").BusinesType }, busines_offers: { required: true, type: () => require("../../business_offers/entities/business_offer.entity").BusinessOffer } };
     }
 };
 __decorate([
@@ -49,6 +51,15 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Busine.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => busines_type_entity_1.BusinesType, (BusinesType) => BusinesType.busines),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", busines_type_entity_1.BusinesType)
+], Busine.prototype, "busines_type", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => business_offer_entity_1.BusinessOffer, (BusinessOffer) => BusinessOffer.busines),
+    __metadata("design:type", business_offer_entity_1.BusinessOffer)
+], Busine.prototype, "busines_offers", void 0);
 Busine = __decorate([
     (0, typeorm_1.Entity)()
 ], Busine);

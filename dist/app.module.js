@@ -17,6 +17,11 @@ const user_entity_1 = require("./users/entities/user.entity");
 const busines_module_1 = require("./busines/busines.module");
 const busine_entity_1 = require("./busines/entities/busine.entity");
 const business_offers_module_1 = require("./business_offers/business_offers.module");
+const busines_type_module_1 = require("./busines-type/busines-type.module");
+const busines_type_entity_1 = require("./busines-type/entities/busines-type.entity");
+const business_offer_entity_1 = require("./business_offers/entities/business_offer.entity");
+const busines_about_module_1 = require("./busines-about/busines-about.module");
+const review_module_1 = require("./review/review.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -42,13 +47,18 @@ AppModule = __decorate([
                 password: '',
                 entities: [
                     user_entity_1.User,
-                    busine_entity_1.Busine
+                    busine_entity_1.Busine,
+                    busines_type_entity_1.BusinesType,
+                    business_offer_entity_1.BusinessOffer,
                 ],
                 synchronize: true,
             }),
             users_module_1.UsersModule,
             busines_module_1.BusinesModule,
             business_offers_module_1.BusinessOffersModule,
+            busines_type_module_1.BusinesTypeModule,
+            busines_about_module_1.BusinesAboutModule,
+            review_module_1.ReviewModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

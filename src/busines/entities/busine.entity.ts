@@ -1,9 +1,13 @@
+import { BusinesType } from 'src/busines-type/entities/busines-type.entity';
+import { BusinessOffer } from 'src/business_offers/entities/business_offer.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -36,4 +40,11 @@ export class Busine {
     },
   })
   user?: User[];
+
+  @ManyToOne(() => BusinesType, (BusinesType) => BusinesType.busines) // specify inverse side as a second parameter
+  @JoinColumn()
+  busines_type: BusinesType;
+
+  @OneToMany(() => BusinessOffer, (BusinessOffer) => BusinessOffer.busines) // specify inverse side as a second parameter
+  busines_offers: BusinessOffer;
 }

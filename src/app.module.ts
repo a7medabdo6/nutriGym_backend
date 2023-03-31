@@ -16,6 +16,11 @@ import { User } from './users/entities/user.entity';
 import { BusinesModule } from './busines/busines.module';
 import { Busine } from './busines/entities/busine.entity';
 import { BusinessOffersModule } from './business_offers/business_offers.module';
+import { BusinesTypeModule } from './busines-type/busines-type.module';
+import { BusinesType } from './busines-type/entities/busines-type.entity';
+import { BusinessOffer } from './business_offers/entities/business_offer.entity';
+import { BusinesAboutModule } from './busines-about/busines-about.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -46,7 +51,9 @@ import { BusinessOffersModule } from './business_offers/business_offers.module';
 
       entities: [
         User,
-        Busine
+        Busine,
+        BusinesType,
+        BusinessOffer,
         // Docs,
         // Flight,
         // Seat,
@@ -62,6 +69,9 @@ import { BusinessOffersModule } from './business_offers/business_offers.module';
     UsersModule,
     BusinesModule,
     BusinessOffersModule,
+    BusinesTypeModule,
+    BusinesAboutModule,
+    ReviewModule,
     // DocsModule,
     // FlightModule,
     // SeatModule,
