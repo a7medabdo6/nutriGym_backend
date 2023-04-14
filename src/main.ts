@@ -40,6 +40,7 @@ async function bootstrap() {
       keys: ['secret'],
     }),
   );
+
   await app.listen(5000);
 }
 bootstrap();

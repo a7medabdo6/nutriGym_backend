@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", String)
 ], BusinesType.prototype, "desc", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: null }),
     __metadata("design:type", String)
 ], BusinesType.prototype, "extra", void 0);
 __decorate([

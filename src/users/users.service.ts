@@ -5,11 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinesService } from 'src/busines/busines.service';
-import { Any, Not, Repository } from 'typeorm';
+import { Any, In, Not, Repository } from 'typeorm';
 import { CreateCodeDto } from './dto/create-code.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { BusinessOffersService } from 'src/business_offers/business_offers.service';
 
 export enum UserRole {
   superadmin = 'superadmin',
@@ -21,10 +22,14 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private repo: Repository<User>,
     private readonly BusinesService: BusinesService,
+    private offerService: BusinessOffersService,
   ) {}
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     const user = this.repo.create(createUserDto);
     const busines = this.BusinesService.findOne(createUserDto.businesId);
+    const offer = await this.offerService.findOne(createUserDto.offer);
+
+    user.busines_offers = [offer];
     return this.repo.save(user);
   }
 
@@ -44,13 +49,31 @@ export class UsersService {
     const user = this.repo.create(CreateCodeDto);
     return this.repo.save(user);
   }
+  // console.log(ids);
+  // const [businesoffer, businesOfferCount] = await this.repo.findAndCount({
+  //   ...(role != 'superadmin' && { where: { busines: { id: In(ids) } } }),
+  //   relations: { busines: true },
+  // });
+  // return { businesoffer, businesOfferCount };
 
-  async findAll(userRole: string) {
-    const users = await this.repo.find({
-      where: { role: Not(UserRole.admin) },
+  async findAll(id: number) {
+    const user = await this.findOne(id);
+
+    let ids = [];
+    // console.log(user, 'user');
+    for (let index = 0; index < user?.busines?.length; index++) {
+      ids.push(user.busines[index].id);
+    }
+    const [users, usersCount] = await this.repo.findAndCount({
+      where: {
+        role: Not(UserRole.superadmin),
+        ...(user?.role != 'superadmin' && {
+          busines_offers: { busines: { id: In(ids) } },
+        }),
+      },
     });
 
-    return users;
+    return { users, usersCount };
   }
 
   async findOne(id: number) {
@@ -60,6 +83,7 @@ export class UsersService {
     }
     const user = await this.repo.findOne({
       where: { id },
+      relations: { busines: true },
     });
     if (!user) {
       throw new NotFoundException('user not found');
@@ -69,6 +93,9 @@ export class UsersService {
   async findOneByEmail(email: string) {
     const user = await this.repo.findOne({
       where: { email },
+      relations: {
+        busines: true,
+      },
     });
 
     return user;

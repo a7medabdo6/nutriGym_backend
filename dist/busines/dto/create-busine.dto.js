@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateBusineDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, logo: { required: true, type: () => String }, type: { required: true, type: () => String }, userId: { required: true, type: () => Number } };
+        return { name: { required: true, type: () => String }, logo: { required: true, type: () => String }, type: { required: true, type: () => String }, userId: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -23,6 +23,7 @@ __decorate([
 ], CreateBusineDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateBusineDto.prototype, "logo", void 0);
 __decorate([
@@ -30,9 +31,8 @@ __decorate([
     __metadata("design:type", String)
 ], CreateBusineDto.prototype, "type", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], CreateBusineDto.prototype, "userId", void 0);
 exports.CreateBusineDto = CreateBusineDto;
 //# sourceMappingURL=create-busine.dto.js.map

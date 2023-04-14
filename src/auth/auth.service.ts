@@ -8,6 +8,7 @@ import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { CreateCodeDto } from 'src/users/dto/create-code.dto';
+import { BusinessOffersService } from 'src/business_offers/business_offers.service';
 const jwt = require('jsonwebtoken');
 
 const scrypt = promisify(_scrypt);
@@ -41,7 +42,8 @@ export class AuthService {
       ...createUserDto,
       password: result,
     });
-    return user;
+
+    return;
   }
   async signin(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;

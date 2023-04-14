@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const nestjs_i18n_1 = require("nestjs-i18n");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
@@ -22,22 +21,15 @@ const busines_type_entity_1 = require("./busines-type/entities/busines-type.enti
 const business_offer_entity_1 = require("./business_offers/entities/business_offer.entity");
 const busines_about_module_1 = require("./busines-about/busines-about.module");
 const review_module_1 = require("./review/review.module");
+const DEFAULT_ADMIN = {
+    email: 'admin@example.com',
+    password: 'password',
+};
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            nestjs_i18n_1.I18nModule.forRoot({
-                fallbackLanguage: 'en',
-                loaderOptions: {
-                    path: './src/i18n/',
-                    watch: true,
-                },
-                resolvers: [
-                    { use: nestjs_i18n_1.QueryResolver, options: ['lang'] },
-                    nestjs_i18n_1.AcceptLanguageResolver,
-                ],
-            }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
                 username: 'root',
@@ -51,7 +43,7 @@ AppModule = __decorate([
                     busines_type_entity_1.BusinesType,
                     business_offer_entity_1.BusinessOffer,
                 ],
-                synchronize: true,
+                synchronize: false,
             }),
             users_module_1.UsersModule,
             busines_module_1.BusinesModule,

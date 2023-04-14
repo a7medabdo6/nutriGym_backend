@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const busines_service_1 = require("../busines/busines.service");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
+const business_offers_service_1 = require("../business_offers/business_offers.service");
 var UserRole;
 (function (UserRole) {
     UserRole["superadmin"] = "superadmin";
@@ -25,24 +26,35 @@ var UserRole;
     UserRole["admin"] = "admin";
 })(UserRole = exports.UserRole || (exports.UserRole = {}));
 let UsersService = class UsersService {
-    constructor(repo, BusinesService) {
+    constructor(repo, BusinesService, offerService) {
         this.repo = repo;
         this.BusinesService = BusinesService;
+        this.offerService = offerService;
     }
-    create(createUserDto) {
+    async create(createUserDto) {
         const user = this.repo.create(createUserDto);
         const busines = this.BusinesService.findOne(createUserDto.businesId);
+        const offer = await this.offerService.findOne(createUserDto.offer);
+        user.busines_offers = [offer];
         return this.repo.save(user);
     }
     createcode(CreateCodeDto) {
         const user = this.repo.create(CreateCodeDto);
         return this.repo.save(user);
     }
-    async findAll(userRole) {
-        const users = await this.repo.find({
-            where: { role: (0, typeorm_2.Not)(UserRole.admin) },
+    async findAll(id) {
+        var _a;
+        const user = await this.findOne(id);
+        let ids = [];
+        for (let index = 0; index < ((_a = user === null || user === void 0 ? void 0 : user.busines) === null || _a === void 0 ? void 0 : _a.length); index++) {
+            ids.push(user.busines[index].id);
+        }
+        const [users, usersCount] = await this.repo.findAndCount({
+            where: Object.assign({ role: (0, typeorm_2.Not)(UserRole.superadmin) }, ((user === null || user === void 0 ? void 0 : user.role) != 'superadmin' && {
+                busines_offers: { busines: { id: (0, typeorm_2.In)(ids) } },
+            })),
         });
-        return users;
+        return { users, usersCount };
     }
     async findOne(id) {
         console.log(id, 'id');
@@ -51,6 +63,7 @@ let UsersService = class UsersService {
         }
         const user = await this.repo.findOne({
             where: { id },
+            relations: { busines: true },
         });
         if (!user) {
             throw new common_1.NotFoundException('user not found');
@@ -60,6 +73,9 @@ let UsersService = class UsersService {
     async findOneByEmail(email) {
         const user = await this.repo.findOne({
             where: { email },
+            relations: {
+                busines: true,
+            },
         });
         return user;
     }
@@ -83,7 +99,8 @@ UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        busines_service_1.BusinesService])
+        busines_service_1.BusinesService,
+        business_offers_service_1.BusinessOffersService])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = exports.UserRole = void 0;
 const openapi = require("@nestjs/swagger");
 const busine_entity_1 = require("../../busines/entities/busine.entity");
+const business_offer_entity_1 = require("../../business_offers/entities/business_offer.entity");
 const typeorm_1 = require("typeorm");
 var UserRole;
 (function (UserRole) {
@@ -19,9 +20,9 @@ var UserRole;
     UserRole["user"] = "user";
     UserRole["admin"] = "admin";
 })(UserRole = exports.UserRole || (exports.UserRole = {}));
-let User = class User {
+let User = class User extends typeorm_1.BaseEntity {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, email: { required: true, type: () => String }, phone: { required: true, type: () => String }, photo: { required: true, type: () => String }, password: { required: true, type: () => String }, username: { required: true, type: () => String }, role: { required: true, enum: require("./user.entity").UserRole }, busines: { required: false, type: () => [require("../../busines/entities/busine.entity").Busine] } };
+        return { id: { required: true, type: () => Number }, email: { required: true, type: () => String }, phone: { required: true, type: () => String }, photo: { required: true, type: () => String }, password: { required: true, type: () => String }, offerId: { required: true, type: () => Number }, username: { required: true, type: () => String }, role: { required: true, enum: require("./user.entity").UserRole }, busines: { required: false, type: () => [require("../../busines/entities/busine.entity").Busine] }, busines_offers: { required: false, type: () => [require("../../business_offers/entities/business_offer.entity").BusinessOffer] } };
     }
 };
 __decorate([
@@ -45,6 +46,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], User.prototype, "offerId", void 0);
+__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "username", void 0);
@@ -63,6 +68,13 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], User.prototype, "busines", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => business_offer_entity_1.BusinessOffer, (BusinessOffer) => BusinessOffer.user, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    }),
+    __metadata("design:type", Array)
+], User.prototype, "busines_offers", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

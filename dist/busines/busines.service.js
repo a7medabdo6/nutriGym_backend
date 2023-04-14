@@ -25,8 +25,9 @@ let BusinesService = class BusinesService {
         const busines = this.repo.create(createBusineDto);
         return this.repo.save(busines);
     }
-    findAll() {
-        return `This action returns all busines`;
+    async findAll() {
+        const [busines, businesCount] = await this.repo.findAndCount({});
+        return { busines, businesCount };
     }
     findOne(id) {
         return this.repo.findOne({ where: { id } });

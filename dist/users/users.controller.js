@@ -15,21 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
-const nestjs_i18n_1 = require("nestjs-i18n");
 const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const auth_service_1 = require("../auth/auth.service");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
+const path_1 = require("path");
 let UsersController = class UsersController {
     constructor(usersService, authService) {
         this.usersService = usersService;
         this.authService = authService;
     }
-    async getHello(i18n) {
-        return await i18n.t('test.HELLO');
-    }
-    async signup(createUserDto) {
-        const user = await this.authService.signup(createUserDto);
+    async signup(file, createUserDto) {
+        const user = await this.authService.signup(Object.assign(Object.assign({}, createUserDto), { photo: file === null || file === void 0 ? void 0 : file.filename }));
         return user;
     }
     async signin(createUserDto) {
@@ -40,9 +39,8 @@ let UsersController = class UsersController {
         session.userId = null;
         return 'ok';
     }
-    findAll(userRole) {
-        console.log(userRole, 'userRole');
-        return this.usersService.findAll(userRole);
+    findAll(id) {
+        return this.usersService.findAll(id);
     }
     findOne(id) {
         return this.usersService.findOne(+id);
@@ -55,19 +53,30 @@ let UsersController = class UsersController {
     }
 };
 __decorate([
-    (0, common_1.Get)('/trans'),
-    openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, nestjs_i18n_1.I18n)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [nestjs_i18n_1.I18nContext]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getHello", null);
-__decorate([
     (0, common_1.Post)('/signup'),
-    openapi.ApiResponse({ status: 201, type: require("./entities/user.entity").User }),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('photo', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                callback(null, uniqueSuffix + (0, path_1.extname)(file.originalname));
+            },
+        }),
+        fileFilter: (req, file, callback) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                return callback(new Error('Only image files are allowed!'), false);
+            }
+            callback(null, true);
+        },
+        limits: {
+            fileSize: 1024 * 1024,
+        },
+    })),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [Object, create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "signup", null);
 __decorate([
@@ -87,11 +96,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "signout", null);
 __decorate([
-    (0, common_1.Get)(),
-    openapi.ApiResponse({ status: 200, type: [require("./entities/user.entity").User] }),
-    __param(0, (0, common_1.Query)('userRole')),
+    (0, common_1.Get)('all-users/:id'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
 __decorate([
@@ -99,7 +108,7 @@ __decorate([
     openapi.ApiResponse({ status: 200, type: require("./entities/user.entity").User }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findOne", null);
 __decorate([

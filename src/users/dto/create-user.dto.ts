@@ -23,9 +23,17 @@ export class CreateUserDto {
   username: string;
   // @IsString()
   // phone: string;
+  @IsString()
+  @IsOptional()
+  photo: string;
 
   @IsEnum(UserRole)
   role: UserRole;
   @IsOptional()
   businesId: number;
+
+  @IsOptional()
+  offer: number;
+  // @IsOptional()
+  // offerId: number;
 }

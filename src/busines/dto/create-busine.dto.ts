@@ -5,12 +5,13 @@ export class CreateBusineDto {
   name: string;
 
   @IsString()
+  @IsOptional()
   logo: string;
 
   @IsString()
   type: string;
 
-  @IsNumber()
+  // @IsNumber()
   @IsOptional()
-  userId: number;
+  userId: string;
 }

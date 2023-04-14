@@ -18,15 +18,33 @@ const common_1 = require("@nestjs/common");
 const business_offers_service_1 = require("./business_offers.service");
 const create_business_offer_dto_1 = require("./dto/create-business_offer.dto");
 const update_business_offer_dto_1 = require("./dto/update-business_offer.dto");
+const path_1 = require("path");
+const multer_1 = require("multer");
+const platform_express_1 = require("@nestjs/platform-express");
+const busines_service_1 = require("../busines/busines.service");
+const users_service_1 = require("../users/users.service");
 let BusinessOffersController = class BusinessOffersController {
-    constructor(businessOffersService) {
+    constructor(businessOffersService, BusinesService, usersService) {
         this.businessOffersService = businessOffersService;
+        this.BusinesService = BusinesService;
+        this.usersService = usersService;
     }
-    create(createBusinessOfferDto) {
-        return this.businessOffersService.create(createBusinessOfferDto);
+    async create(file, createBusinessOfferDto) {
+        if (!file) {
+            throw new common_1.BadRequestException(' please Add photo');
+        }
+        const busines = await this.BusinesService.findOne(+createBusinessOfferDto.busines);
+        return this.businessOffersService.create(Object.assign(Object.assign({}, createBusinessOfferDto), { photo: file.filename }), busines);
     }
-    findAll() {
-        return this.businessOffersService.findAll();
+    async findAll(id) {
+        var _a;
+        const user = await this.usersService.findOne(id);
+        let ids = [];
+        console.log(user, 'user');
+        for (let index = 0; index < ((_a = user === null || user === void 0 ? void 0 : user.busines) === null || _a === void 0 ? void 0 : _a.length); index++) {
+            ids.push(user.busines[index].id);
+        }
+        return this.businessOffersService.findAll(ids, user.role);
     }
     findOne(id) {
         return this.businessOffersService.findOne(+id);
@@ -40,22 +58,42 @@ let BusinessOffersController = class BusinessOffersController {
 };
 __decorate([
     (0, common_1.Post)(),
-    openapi.ApiResponse({ status: 201, type: String }),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('photo', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                callback(null, uniqueSuffix + (0, path_1.extname)(file.originalname));
+            },
+        }),
+        fileFilter: (req, file, callback) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                return callback(new Error('Only image files are allowed!'), false);
+            }
+            callback(null, true);
+        },
+        limits: {
+            fileSize: 1024 * 1024,
+        },
+    })),
+    openapi.ApiResponse({ status: 201, type: require("./entities/business_offer.entity").BusinessOffer }),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_business_offer_dto_1.CreateBusinessOfferDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, create_business_offer_dto_1.CreateBusinessOfferDto]),
+    __metadata("design:returntype", Promise)
 ], BusinessOffersController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
-    openapi.ApiResponse({ status: 200, type: String }),
+    (0, common_1.Get)(':id'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
 ], BusinessOffersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    openapi.ApiResponse({ status: 200, type: String }),
+    openapi.ApiResponse({ status: 200, type: require("./entities/business_offer.entity").BusinessOffer }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -72,7 +110,7 @@ __decorate([
 ], BusinessOffersController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    openapi.ApiResponse({ status: 200, type: String }),
+    openapi.ApiResponse({ status: 200, type: require("./entities/business_offer.entity").BusinessOffer }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -80,7 +118,9 @@ __decorate([
 ], BusinessOffersController.prototype, "remove", null);
 BusinessOffersController = __decorate([
     (0, common_1.Controller)('business-offers'),
-    __metadata("design:paramtypes", [business_offers_service_1.BusinessOffersService])
+    __metadata("design:paramtypes", [business_offers_service_1.BusinessOffersService,
+        busines_service_1.BusinesService,
+        users_service_1.UsersService])
 ], BusinessOffersController);
 exports.BusinessOffersController = BusinessOffersController;
 //# sourceMappingURL=business_offers.controller.js.map

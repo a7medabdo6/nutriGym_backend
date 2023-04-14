@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BusinesTypeController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
+const path_1 = require("path");
 const busines_type_service_1 = require("./busines-type.service");
 const create_busines_type_dto_1 = require("./dto/create-busines-type.dto");
 const update_busines_type_dto_1 = require("./dto/update-busines-type.dto");
@@ -22,7 +25,8 @@ let BusinesTypeController = class BusinesTypeController {
     constructor(businesTypeService) {
         this.businesTypeService = businesTypeService;
     }
-    create(createBusinesTypeDto) {
+    create(file, createBusinesTypeDto) {
+        console.log(file, 'fileee');
         return this.businesTypeService.create(createBusinesTypeDto);
     }
     findAll() {
@@ -40,10 +44,29 @@ let BusinesTypeController = class BusinesTypeController {
 };
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('cover', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                callback(null, uniqueSuffix + (0, path_1.extname)(file.originalname));
+            },
+        }),
+        fileFilter: (req, file, callback) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                return callback(new Error('Only image files are allowed!'), false);
+            }
+            callback(null, true);
+        },
+        limits: {
+            fileSize: 1024 * 1024,
+        },
+    })),
     openapi.ApiResponse({ status: 201, type: String }),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_busines_type_dto_1.CreateBusinesTypeDto]),
+    __metadata("design:paramtypes", [Object, create_busines_type_dto_1.CreateBusinesTypeDto]),
     __metadata("design:returntype", void 0)
 ], BusinesTypeController.prototype, "create", null);
 __decorate([

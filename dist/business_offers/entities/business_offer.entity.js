@@ -12,10 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BusinessOffer = void 0;
 const openapi = require("@nestjs/swagger");
 const busine_entity_1 = require("../../busines/entities/busine.entity");
+const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
 let BusinessOffer = class BusinessOffer {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, name: { required: true, type: () => String }, price: { required: true, type: () => String }, duration: { required: true, type: () => String }, desc: { required: true, type: () => String }, photo: { required: true, type: () => String }, extra: { required: true, type: () => String }, busines: { required: true, type: () => require("../../busines/entities/busine.entity").Busine } };
+        return { id: { required: true, type: () => Number }, name: { required: true, type: () => String }, price: { required: true, type: () => String }, duration: { required: true, type: () => String }, desc: { required: true, type: () => String }, photo: { required: true, type: () => String }, extra: { required: true, type: () => String }, busines: { required: true, type: () => require("../../busines/entities/busine.entity").Busine }, user: { required: false, type: () => [require("../../users/entities/user.entity").User] }, length: { required: true, type: () => Number } };
     }
 };
 __decorate([
@@ -51,6 +52,21 @@ __decorate([
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", busine_entity_1.Busine)
 ], BusinessOffer.prototype, "busines", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => user_entity_1.User, (user) => user.busines_offers, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' }),
+    (0, typeorm_1.JoinTable)({
+        name: 'user_businesOffers',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'businesoffers_id',
+            referencedColumnName: 'id',
+        },
+    }),
+    __metadata("design:type", Array)
+], BusinessOffer.prototype, "user", void 0);
 BusinessOffer = __decorate([
     (0, typeorm_1.Entity)()
 ], BusinessOffer);

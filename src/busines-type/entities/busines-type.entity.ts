@@ -21,7 +21,7 @@ export class BusinesType {
   @Column()
   desc: string;
 
-  @Column()
+  @Column({ default: null })
   extra: string;
   @OneToMany(() => Busine, (busine) => busine.busines_type) // specify inverse side as a second parameter
   busines: Busine;

@@ -7,7 +7,10 @@ export declare class BusinesService {
     private repo;
     constructor(repo: Repository<Busine>);
     create(createBusineDto: CreateBusineDto): Promise<Busine>;
-    findAll(): string;
+    findAll(): Promise<{
+        busines: Busine[];
+        businesCount: number;
+    }>;
     findOne(id: number): Promise<Busine>;
     update(id: number, updateBusineDto: UpdateBusineDto, User: User): Promise<Busine>;
     remove(id: number): string;

@@ -20,7 +20,7 @@ var UserRole;
 })(UserRole = exports.UserRole || (exports.UserRole = {}));
 class CreateUserDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { email: { required: true, type: () => String }, password: { required: true, type: () => String }, username: { required: true, type: () => String }, role: { required: true, enum: require("./create-user.dto").UserRole }, businesId: { required: true, type: () => Number } };
+        return { email: { required: true, type: () => String }, password: { required: true, type: () => String }, username: { required: true, type: () => String }, photo: { required: true, type: () => String }, role: { required: true, enum: require("./create-user.dto").UserRole }, businesId: { required: true, type: () => Number }, offer: { required: true, type: () => Number } };
     }
 }
 __decorate([
@@ -36,6 +36,11 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "username", void 0);
 __decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "photo", void 0);
+__decorate([
     (0, class_validator_1.IsEnum)(UserRole),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);
@@ -43,5 +48,9 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], CreateUserDto.prototype, "businesId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateUserDto.prototype, "offer", void 0);
 exports.CreateUserDto = CreateUserDto;
 //# sourceMappingURL=create-user.dto.js.map

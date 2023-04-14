@@ -12,13 +12,21 @@ const business_offers_service_1 = require("./business_offers.service");
 const business_offers_controller_1 = require("./business_offers.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const business_offer_entity_1 = require("./entities/business_offer.entity");
+const busines_module_1 = require("../busines/busines.module");
+const users_module_1 = require("../users/users.module");
+const auth_service_1 = require("../auth/auth.service");
 let BusinessOffersModule = class BusinessOffersModule {
 };
 BusinessOffersModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([business_offer_entity_1.BusinessOffer])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([business_offer_entity_1.BusinessOffer]),
+            busines_module_1.BusinesModule,
+            (0, common_1.forwardRef)(() => users_module_1.UsersModule),
+        ],
         controllers: [business_offers_controller_1.BusinessOffersController],
-        providers: [business_offers_service_1.BusinessOffersService]
+        providers: [business_offers_service_1.BusinessOffersService, auth_service_1.AuthService],
+        exports: [business_offers_service_1.BusinessOffersService],
     })
 ], BusinessOffersModule);
 exports.BusinessOffersModule = BusinessOffersModule;

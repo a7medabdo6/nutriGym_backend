@@ -1,5 +1,7 @@
 import { Busine } from 'src/busines/entities/busine.entity';
+import { BusinessOffer } from 'src/business_offers/entities/business_offer.entity';
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -17,7 +19,7 @@ export enum UserRole {
 }
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
@@ -29,6 +31,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({ default: 0 })
+  offerId: number;
 
   @Column()
   username: string;
@@ -45,6 +50,12 @@ export class User {
     onUpdate: 'NO ACTION',
   })
   busines?: Busine[];
+
+  @ManyToMany(() => BusinessOffer, (BusinessOffer) => BusinessOffer.user, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  busines_offers?: BusinessOffer[];
 
   // @Column({
   //   default: false,

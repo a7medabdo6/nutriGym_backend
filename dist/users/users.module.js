@@ -15,17 +15,18 @@ const user_entity_1 = require("./entities/user.entity");
 const auth_service_1 = require("../auth/auth.service");
 const current_user_interceptor_1 = require("./interceptors/current-user.interceptor");
 const busines_module_1 = require("../busines/busines.module");
+const business_offers_module_1 = require("../business_offers/business_offers.module");
 let UsersModule = class UsersModule {
 };
 UsersModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]), busines_module_1.BusinesModule],
-        controllers: [users_controller_1.UsersController],
-        providers: [
-            users_service_1.UsersService,
-            auth_service_1.AuthService,
-            current_user_interceptor_1.CurrentUserInterceptor,
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            busines_module_1.BusinesModule,
+            (0, common_1.forwardRef)(() => business_offers_module_1.BusinessOffersModule),
         ],
+        controllers: [users_controller_1.UsersController],
+        providers: [users_service_1.UsersService, auth_service_1.AuthService, current_user_interceptor_1.CurrentUserInterceptor],
         exports: [users_service_1.UsersService],
     })
 ], UsersModule);

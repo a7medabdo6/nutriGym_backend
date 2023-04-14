@@ -30,7 +30,7 @@ let AuthService = class AuthService {
         const hash = (await scrypt(password, salt, 32));
         const result = salt + '.' + hash.toString('hex');
         const user = await this.usersService.create(Object.assign(Object.assign({}, createUserDto), { password: result }));
-        return user;
+        return;
     }
     async signin(createUserDto) {
         const { email, password } = createUserDto;
